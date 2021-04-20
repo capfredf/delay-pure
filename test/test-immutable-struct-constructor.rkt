@@ -12,36 +12,38 @@
   #:transparent)
 
 ;; From this module
-(check-true (immutable-struct-constructor? st1 (#%variable-reference)))
-(check-true (immutable-struct-constructor? make-st2 (#%variable-reference)))
+(check-true (immutable-struct-constructor? st1 st1 (#%variable-reference)))
+(check-true (immutable-struct-constructor? st2 make-st2 (#%variable-reference)))
 ;; From another module
-(check-true (immutable-struct-constructor? st3-mod (#%variable-reference)))
-(check-true (immutable-struct-constructor? make-st4-mod (#%variable-reference)))
+(check-true (immutable-struct-constructor? st3-mod st3-mod (#%variable-reference)))
+(check-true (immutable-struct-constructor? st4-mod make-st4-mod (#%variable-reference)))
 
 ;; From a macro
 (define-syntax (test-from-macro _)
   #'(begin
       ;; From this module
-      (check-true (immutable-struct-constructor? st1
+      (check-true (immutable-struct-constructor? st1 st1
                                                  (#%variable-reference)))
-      (check-true (immutable-struct-constructor? make-st2
+      (check-true (immutable-struct-constructor? st2 make-st2
                                                  (#%variable-reference)))
       ;; From another module
-      (check-true (immutable-struct-constructor? st3-mod
+      (check-true (immutable-struct-constructor? st3-mod st3-mod
                                                  (#%variable-reference)))
-      (check-true (immutable-struct-constructor? make-st4-mod
+      (check-true (immutable-struct-constructor? st4-mod make-st4-mod
                                                  (#%variable-reference)))))
 
 (test-from-macro)
 
 ;; From a macro, using a module which is required by the macro
+
 (define-syntax (test-required-from-macro _)
   #'(begin
       (require "test-immutable-struct-constructor-mod2.rkt")
       ;; From another module
-      (check-true (immutable-struct-constructor? st3-mod
+      (check-true (immutable-struct-constructor? st3-mod st3-mod
                                                  (#%variable-reference)))
-      (check-true (immutable-struct-constructor? make-st4-mod
+      (check-true (immutable-struct-constructor? st4-mod make-st4-mod
                                                  (#%variable-reference)))))
+
 
 (test-required-from-macro)
